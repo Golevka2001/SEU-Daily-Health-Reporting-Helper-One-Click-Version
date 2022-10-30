@@ -5,7 +5,7 @@
 @Author: XAKK
 @Forked by: Gol3vka<gol3vka@163.com>
 @Created date: 2020/12/25 - XAKK
-@Last modified date: 2022/10/17 - Gol3vka
+@Last modified date: 2022/10/30 - Gol3vka
 '''
 
 from email_sending_module import EmailSendingModule
@@ -14,6 +14,7 @@ import os
 import time
 from random import random
 
+import requests
 import yaml
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
@@ -49,6 +50,17 @@ class ReportingHelper:
                 port = config.get('port')  # int
 
             self.cfg = Config
+
+    def check_connection(self) -> None:
+        '''Check the Internet connection, pause when no connection
+        '''
+        while True:
+            try:
+                requests.get("https://www.seu.edu.cn", timeout=2)
+                break
+            except Exception:
+                print('[ERROR]Please check the Internet connection.')
+                input('>>> Press ENTER To Retry <<<')
 
     def generate_random_temperature(self) -> str:
         '''Generate random normal body temperature: [36.2, 36.7]
@@ -132,10 +144,7 @@ class ReportingHelper:
                 }
 
                 if self.cfg.notify_failure_only[i] == 'no':
-                    mail = {
-                        'subject': '[NOTIFICATION]',
-                        'body': status
-                    }
+                    mail = {'subject': '[NOTIFICATION]', 'body': status}
                     self.email.config.load_from_parameters(
                         sender_information, receivers_information, mail,
                         server_information)
@@ -156,11 +165,14 @@ class ReportingHelper:
                         print('[INFO]Failed sending')
 
             driver.close()
-            print('[INFO]' + time.strftime('%Y-%m-%d %H:%M:%S -', time.localtime()),
-                  status)
+            print(
+                '[INFO]' +
+                time.strftime('%Y-%m-%d %H:%M:%S -', time.localtime()), status)
 
 
 if __name__ == '__main__':
-    print('[INFO]' + time.strftime('%Y-%m-%d %H:%M:%S -', time.localtime()), 'start')
+    print('[INFO]' + time.strftime('%Y-%m-%d %H:%M:%S -', time.localtime()),
+          'start')
     rh = ReportingHelper()
+    rh.check_connection()
     rh.run()
