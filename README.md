@@ -178,9 +178,11 @@ run.bat
 借助一台在预定义时间处于运行状态的 Windows 机器，以及 Windows 任务计划程序，可以无人干预的情况下每日自动打卡。
 
 **打开任务计划程序**：按下 `Win` + `R` ，输入 `taskschd.msc`
+
 ![taskschd](README.assets/taskschd.png)
 
 **创建任务**：右键【任务计划程序库】，点击【创建任务】
+
 ![create_task](README.assets/create_task.png)
 
 **常规**：
